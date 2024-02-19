@@ -8,9 +8,7 @@ section{
   left: 0;
   width: 100%;
   height: 100vh;
-  /* https://lh3.googleusercontent.com/ka_5IYJDRkXZnbptxq64LPuggGL5FM8gnpJlsuSiOQh4b39kMkiRbVfX8iK8bjMg5SLkdfoix09P60wyFjN2=w681-h614 */
   background: rgba(10, 10, 10);
-/*   background-color:black; */
   background-size: cover;
   animation: animateBg 50s linear infinite;
 }
@@ -230,7 +228,7 @@ span:nth-child(9){
     position: fixed;
   }
 
-.roottext5 {
+  .roottext5 {
     font-family: minecraft;
     margin-top: 5px;
     margin-left: -314px;
