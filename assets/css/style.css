@@ -240,6 +240,16 @@ span:nth-child(9){
     position: fixed;
   }
 
+.roottext6 {
+    font-family: minecraft;
+    margin-top: 50px;
+    margin-left: -450px;
+    color: rgb(186, 185, 185);
+    font-size: small;
+    cursor: default;
+    position: fixed;
+  }
+
   .specs{
     font-family: minecraft;
     margin-top: -350px;
