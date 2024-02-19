@@ -230,9 +230,9 @@ span:nth-child(9){
     position: fixed;
   }
 
-  .roottext5 {
+.roottext5 {
     font-family: minecraft;
-    margin-top: 3px;
+    margin-top: 5px;
     margin-left: -314px;
     color: rgb(186, 185, 185);
     font-size: small;
@@ -240,9 +240,9 @@ span:nth-child(9){
     position: fixed;
   }
 
-.roottext6 {
+  .roottext6 {
     font-family: minecraft;
-    margin-top: 50px;
+    margin-top: 55.5px;
     margin-left: -452.5px;
     color: rgb(186, 185, 185);
     font-size: small;
