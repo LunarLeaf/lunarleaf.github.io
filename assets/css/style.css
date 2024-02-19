@@ -1,0 +1,412 @@
+body{
+  overflow: hidden;
+  margin: 0;
+}
+section{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  /* https://lh3.googleusercontent.com/ka_5IYJDRkXZnbptxq64LPuggGL5FM8gnpJlsuSiOQh4b39kMkiRbVfX8iK8bjMg5SLkdfoix09P60wyFjN2=w681-h614 */
+  background: rgba(10, 10, 10);
+/*   background-color:black; */
+  background-size: cover;
+  animation: animateBg 50s linear infinite;
+}
+
+@keyframes animateBg{
+  0%,100%{
+      transform: scale(1);
+  }
+  50%{
+      transform: scale(1.2);
+  }
+}
+
+span{
+  position: absolute;
+  top:50%;
+  left:50%;
+  width: 4px;
+  height: 4px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px rgba(255,255,255,0.1),0 0 0 8px rgba(255,255,255,0.1),0 0 20px rgba(255,255,255,0.1);
+  animation: animate 3s linear infinite;
+}
+span::before{
+  content:'';
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 300px;
+  height: 1px;
+  background: linear-gradient(90deg,#fff,transparent);
+}
+@keyframes animate
+{
+  0%
+  {
+      transform: rotate(315deg) translateX(0);
+      opacity: 1;
+  }
+  70%
+  {
+      opacity: 1;
+  }
+  100%
+  {
+      transform: rotate(315deg) translateX(-1000px);
+      opacity: 0;
+  }
+}
+span:nth-child(1){
+  top: 0;
+  right: 0;
+  left: initial;
+  animation-delay: 0s;
+  animation-duration: 1s;
+}
+span:nth-child(2){
+  top: 0;
+  right: 80px;
+  left: initial;
+  animation-delay: 0.2s;
+  animation-duration: 3s;
+}
+span:nth-child(3){
+  top: 80;
+  right: 0px;
+  left: initial;
+  animation-delay: 0.4s;
+  animation-duration: 2s;
+}
+span:nth-child(4){
+  top: 0;
+  right: 180px;
+  left: initial;
+  animation-delay: 0.6s;
+  animation-duration: 1.5s;
+}
+span:nth-child(5){
+  top: 0;
+  right: 400px;
+  left: initial;
+  animation-delay: 0.8s;
+  animation-duration: 2.5s;
+}
+span:nth-child(6){
+  top: 0;
+  right: 600px;
+  left: initial;
+  animation-delay: 1s;
+  animation-duration: 3s;
+}
+span:nth-child(7){
+  top: 300px;
+  right: 0px;
+  left: initial;
+  animation-delay: 1.2s;
+  animation-duration: 1.75s;
+}
+span:nth-child(8){
+  top: 0px;
+  right: 700px;
+  left: initial;
+  animation-delay: 1.4s;
+  animation-duration: 1.25s;
+}
+span:nth-child(9){
+  top: 0px;
+  right: 1000px;
+  left: initial;
+  animation-delay: 0.75s;
+  animation-duration: 2.25s;
+}
+span:nth-child(9){
+  top: 0px;
+  right: 450px;
+  left: initial;
+  animation-delay: 2.75s;
+  animation-duration: 2.75s;
+}
+
+.card-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  .card {
+    width: 850px; 
+    height: 500px; 
+    background-color: rgba(8, 8, 8); 
+    color: white; 
+    border: 3px solid #ccc;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0px 0px 20px rgba(255, 255, 255, 0.5); 
+    backdrop-filter: blur(5px); 
+  }
+  
+
+  .nick {
+    position: fixed;
+    font-family: minecraft;
+    margin-top: -435px;
+    margin-left: -650px;
+    background-image: 
+    linear-gradient(to right, red,orange,yellow,green,blue,indigo,violet, red); 
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;  
+    animation: rainbow-animation 1000s linear infinite;
+    font-size: xx-large;
+    cursor: default;
+  }
+
+  .info {
+    position: fixed;
+    font-family: minecraft;
+    margin-right: -720px;
+    margin-top: 465px;
+    color: rgb(186, 185, 185);
+    font-size: small;
+    cursor: default;
+  }
+
+  .root {
+    font-family: minecraft;
+    margin-top: -350px;
+    margin-left: -290px;
+    color: rgb(186, 185, 185);
+    font-size: medium;
+    cursor: default;
+    position: fixed;
+  }
+
+
+  .roottext {
+    font-family: minecraft;
+    margin-top: -200px;
+    margin-left: -21px;
+    color: rgb(186, 185, 185);
+    font-size: small;
+    cursor: default;
+    position: fixed;
+  }
+
+  .roottext2 {
+    font-family: minecraft;
+    margin-top: -150px;
+    margin-left: -102.5px;
+    color: rgb(186, 185, 185);
+    font-size: small;
+    cursor: default;
+    position: fixed;
+  }
+
+  .roottext3 {
+    font-family: minecraft;
+    margin-top: -97.5px;
+    margin-left: -338.5px;
+    color: rgb(186, 185, 185);
+    font-size: small;
+    cursor: default;
+    position: fixed;
+  }
+
+  .roottext4 {
+    font-family: minecraft;
+    margin-top: -44.5px;
+    margin-left: -313px;
+    color: rgb(186, 185, 185);
+    font-size: small;
+    cursor: default;
+    position: fixed;
+  }
+
+  .roottext5 {
+    font-family: minecraft;
+    margin-top: 3px;
+    margin-left: -314px;
+    color: rgb(186, 185, 185);
+    font-size: small;
+    cursor: default;
+    position: fixed;
+  }
+
+  .specs{
+    font-family: minecraft;
+    margin-top: -350px;
+    margin-left: -60px;
+    color: rgb(186, 185, 185);
+    font-size: medium;
+    cursor: default;
+    position: fixed;
+  }
+  
+
+  .specstext {
+    font-family: minecraft;
+    margin-top: -200px;
+    margin-left: -753px;
+    color: rgb(186, 185, 185);
+    font-size: small;
+    cursor: default;
+    position: fixed;
+  }
+
+  .specstext2 {
+    font-family: minecraft;
+    margin-top: -150px;
+    margin-left: -678px;
+    color: rgb(186, 185, 185);
+    font-size: small;
+    cursor: default;
+    position: fixed;
+  }
+
+  .specstext3 {
+    font-family: minecraft;
+    margin-top: -97.5px;
+    margin-left: -751px;
+    color: rgb(186, 185, 185);
+    font-size: small;
+    cursor: default;
+    position: fixed;
+  }
+
+  .specstext4 {
+    font-family: minecraft;
+    margin-top: -44.5px;
+    margin-left: -718px;
+    color: rgb(186, 185, 185);
+    font-size: small;
+    cursor: default;
+    position: fixed;
+  }
+
+  .specstext5 {
+    font-family: minecraft;
+    margin-top: 6px;
+    margin-left: -758.5px;
+    color: rgb(186, 185, 185);
+    font-size: small;
+    cursor: default;
+    position: fixed;
+  }
+
+  .specstext6 {
+    font-family: minecraft;
+    margin-top: 55px;
+    margin-left: -745.5px;
+    color: rgb(186, 185, 185);
+    font-size: small;
+    cursor: default;
+    position: fixed;
+  }
+
+  .specstext7 {
+    font-family: minecraft;
+    margin-top: 103px;
+    margin-left: -746.5px;
+    color: rgb(186, 185, 185);
+    font-size: small;
+    cursor: default;
+    position: fixed;
+  }
+
+  .specstext8 {
+    font-family: minecraft;
+    margin-top: 152.5px;
+    margin-left: -758.5px;
+    color: rgb(186, 185, 185);
+    font-size: small;
+    cursor: default;
+    position: fixed;
+  }
+
+  .specstext9 {
+    font-family: minecraft;
+    margin-top: 199.5px;
+    margin-left: -716.5px;
+    color: rgb(186, 185, 185);
+    font-size: small;
+    cursor: default;
+    position: fixed;
+  }
+
+  .app {
+    font-family: minecraft;
+    margin-top: -350px;
+    margin-left: 220px;
+    color: rgb(186, 185, 185);
+    font-size: medium;
+    cursor: default;
+    position: fixed;
+  }
+
+  .apptext {
+    font-family: minecraft;
+    margin-top: -200px;
+    margin-left: -656px;
+    color: rgb(186, 185, 185);
+    font-size: small;
+    cursor: default;
+    position: fixed;
+  }
+
+  .apptext2 {
+    font-family: minecraft;
+    margin-top: -150px;
+    margin-left: -735px;
+    color: rgb(186, 185, 185);
+    font-size: small;
+    cursor: default;
+    position: fixed;
+  }
+
+  .apptext3 {
+    font-family: minecraft;
+    margin-top: -97.5px;
+    margin-left: -748px;
+    color: rgb(186, 185, 185);
+    font-size: small;
+    cursor: default;
+    position: fixed;
+  }
+
+  a {
+    color: rgb(227, 227, 227);
+    text-decoration: none; 
+  }
+
+  .copyright {
+    font-family: minecraft;
+    margin-top: 473.5px;
+    color: rgb(186, 185, 185);
+    font-size: x-small;
+    cursor: default;
+    position: fixed;
+  }
+
+  hr.new1 {
+    border: 2px rgb(186, 185, 185);
+    border-style: solid;
+    width: 350px;
+    border-radius: 1px;
+    cursor: default;
+    position: fixed;
+    margin-top: -289px;
+  }
+
+ @keyframes rainbow-animation {
+    to {
+        background-position: 4500vh;
+    }
+}
