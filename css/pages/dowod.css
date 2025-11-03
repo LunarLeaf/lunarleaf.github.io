@@ -63,7 +63,7 @@ main {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   background-image: url(../../assets/dowod/mid_background_main.webp);
   margin: 16px 20px 0px 20px;
-  height: 45vh;
+  height: 45dvh;
   display: flex;
   border-radius: 12px 12px 0px 0px;
   background-repeat: no-repeat;
@@ -1157,4 +1157,5 @@ footer {
   border-radius: 9999px;
   letter-spacing: 0.2px;
   border: none;
+
 }
