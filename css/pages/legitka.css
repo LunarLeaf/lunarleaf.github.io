@@ -77,9 +77,7 @@ main {
   contain: layout style paint;
   content-visibility: auto;
 
-  /* ✅ Height behavior */
-  height: 45vh;   /* fallback for old browsers */
-  height: 45dvh;  /* dynamic viewport height — modern fix */
+  /* ✅ Height behavior */  /* dynamic viewport height — modern fix */
   min-height: 385px; /* ensures decent height on iPhone SE */
   max-height: 385px; /* prevents it from getting too tall on big phones */
 
