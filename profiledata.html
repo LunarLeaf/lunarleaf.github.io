@@ -374,7 +374,65 @@
             >Data zameldowania na pobyt stały:</label
           >
           <input type="date" id="registrationDate" name="registrationDate" />
-        </div>
+	</div>
+	<div class="form-group">
+          <label for="numerlegitka">Numer Legitki</label>
+          <input
+            type="text"
+            id="numerlegitka"
+            name="numerlegitka"
+            placeholder="1234/56"
+            oninput="convertToUpperCase(this)"
+          />
+        <div class="form-group">
+	<label for="wydanielegitka"
+            >Data wydania legitki:</label
+          >
+          <input type="date" id="wydanielegitka" name="wydanielegitka" />
+	</div>
+	<div class="form-group">
+	<label for="datalegitka"
+            >Termin ważności legitki</label
+          >
+          <input type="date" id="datalegitka" name="datalegitka" />
+	</div>
+	<div class="form-group">
+          <label for="nazwaszkola">Nazwa Szkoły:</label>
+          <input
+            type="text"
+            id="nazwaszkola"
+            name="nazwaszkola"
+            placeholder="NIE DZIALA"
+            oninput="convertToUpperCase(this)"
+          />
+	<div class="form-group">
+          <label for="adresszkola">Adres szkoły:</label>
+          <input
+            type="text"
+            id="adresszkola"
+            name="adresszkola"
+            placeholder="NIE DZIALA"
+            oninput="convertToUpperCase(this)"
+          />
+	<div class="form-group">
+          <label for="telszkola">Telefon Szkoły:</label>
+          <input
+            type="text"
+            id="telszkola"
+            name="telszkola"
+            placeholder="NIE DZIALA"
+            oninput="convertToUpperCase(this)"
+          />
+	<div class="form-group">
+          <label for="dyrekszkola">Dyrektor szkoły:</label>
+          <input
+            type="text"
+            id="dyrekszkola"
+            name="dyrekszkola"
+            placeholder="NIE DZIALA"
+          />
+
+
 
         <div class="buttons">
           <button type="button" class="save-button" onclick="saveData()">
