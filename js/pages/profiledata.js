@@ -119,6 +119,13 @@ document.addEventListener("DOMContentLoaded", function () {
       ["issueDate_do", "do_issueDate"],
       ["fathername", "fathername"],
       ["mothername", "mothername"],
+      ["numerlegitka", "numerlegitka"],
+      ["wydanielegitka", "wydanielegitka"],
+      ["datalegitka", "datalegitka"],
+      ["dyrekszkola", "dyrekszkola"],
+      ["telszkola", "telszkola"],
+      ["adresszkola", "adresszkola"],
+      ["nazwaszkola", "nazwaszkola"],
     ];
 
     var up = function (s) {
@@ -219,6 +226,13 @@ function saveData() {
     put("do_issueDate", get("issueDate_do"));
     put("fathername", get("fathername"));
     put("mothername", get("mothername"));
+    put("numerlegitka", get("numerlegitka"));
+    put("wydanielegitka", get("wydanielegitka"));
+    put("datalegitka", get("datalegitka"));
+    put("dyrekszkola", get("dyrekszkola"));
+    put("telszkola", get("telszkola"));
+    put("adresszkola", get("adresszkola"));
+    put("nazwaszkola", get("nazwaszkola"));
     // usunięto sekcję paszportową, pola nie są już zapisywane
 
     alert("Dane zostały zapisane!");
