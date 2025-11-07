@@ -87,18 +87,6 @@ main {
 }
 
 /* 📱 Small phones (like iPhone SE, height ≤ 700px) */
-@media (max-height: 700px) {
-  main {
-    height: 55dvh;
-  }
-}
-
-/* 🖥️ Very tall screens (like iPhone Pro Max) */
-@media (min-height: 850px) {
-  main {
-    height: 40dvh;
-  }
-}
 
 
 #lew {
