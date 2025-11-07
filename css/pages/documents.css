@@ -125,6 +125,11 @@ body.dashboard-page {
   display: none;
 }
 
+.id-card--legitka {
+  margin-top: -160px; /* overlap amount, adjust as you like */
+  z-index: 2; /* make sure it's above the first card */
+}
+
 .id-card {
   position: relative;
   width: 100%;
