@@ -301,3 +301,40 @@ async function sha256Hex(str) {
     });
   } catch (_) {}
 })();
+
+// Obsługa dark mode dla KPO logo
+(function () {
+  function updateKPOLogo() {
+    try {
+      const kpoLogo = document.querySelector(".login__kpoLogo");
+      if (!kpoLogo) return;
+
+      const isDark =
+        document.documentElement.getAttribute("data-theme") === "dark";
+      if (isDark) {
+        kpoLogo.src = kpoLogo.getAttribute("data-dark-src");
+      } else {
+        kpoLogo.src = "assets/icons/coi_common_ui_kpo_logo_group.svg";
+      }
+    } catch (_) {}
+  }
+
+  // Uruchom przy załadowaniu
+  document.addEventListener("DOMContentLoaded", updateKPOLogo);
+
+  // Słuchaj zmian dark mode
+  const observer = new MutationObserver(function (mutations) {
+    mutations.forEach(function (mutation) {
+      if (mutation.attributeName === "data-theme") {
+        updateKPOLogo();
+      }
+    });
+  });
+
+  document.addEventListener("DOMContentLoaded", function () {
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
+  });
+})();
