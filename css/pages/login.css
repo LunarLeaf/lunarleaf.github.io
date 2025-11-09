@@ -71,10 +71,13 @@ a {
   height: 100%;
   display: grid;
   grid-template-rows: auto 1fr auto;
+  width: 100%;
   max-width: 460px;
   margin: 0 auto;
-  padding: clamp(16px, 3.5vh, 44px) 20px clamp(12px, 2.5vh, 28px);
+  padding-top: clamp(16px, 3.5vh, 44px);
+  padding-bottom: clamp(12px, 2.5vh, 28px);
   gap: clamp(12px, 2.5vh, 32px);
+  box-sizing: border-box;
   /* bez overflow na kontenerze strony – przewijanie tylko na sekcji main (gdy konieczne) */
 }
 
@@ -96,6 +99,7 @@ a {
   align-items: flex-start;
   gap: clamp(12px, 2vh, 20px);
   flex-shrink: 0;
+  margin-left: 20px;
 }
 
 .login__logo-group {
@@ -152,6 +156,7 @@ a {
   -webkit-overflow-scrolling: touch;
   display: flex;
   align-items: flex-start;
+  margin: 0 20px 0 20px;
 }
 
 .login__form {
@@ -233,8 +238,7 @@ a {
 }
 
 .login__submit {
-  width: 100%;
-  padding: clamp(14px, 2vh, 18px);
+  width: 92%;
   background-color: var(--blue-active);
   color: #fff;
   border: none;
@@ -245,6 +249,7 @@ a {
   line-height: 1;
   transition: transform 0.2s ease;
   flex-shrink: 0;
+  margin: 0 auto;
 }
 
 .login__submit:hover {
@@ -257,35 +262,85 @@ a {
 
 .login__footer {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  width: 100%;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 92%;
   flex-shrink: 0;
-  /* zachowaj bezpieczny dół w trybie PWA/fullscreen */
   padding-bottom: env(safe-area-inset-bottom, 0);
+  gap: 8px;
+  margin: 0 auto;
 }
 
 .login__footerImages {
   display: flex;
   align-items: center;
-  gap: 16px;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: nowrap;
 }
 
 .login__footerLogo {
-  height: clamp(28px, 5vh, 36px);
+  height: clamp(20px, 3vh, 24px);
   width: auto;
+  flex: 1 1 auto;
+  max-width: none;
+}
+
+.login__kpoLogo {
+  height: clamp(16px, 2.5vh, 20px);
+  margin-left: 4px;
+  flex: 1 1 auto;
+  max-width: none;
 }
 
 .login__version {
   font-size: 0.7rem;
   font-weight: 400;
   color: rgba(19, 20, 25, 0.55);
-  margin-bottom: 9px;
+  margin: 0;
+  text-align: center;
+}
+
+/* Dark mode - zmień KPO logo */
+[data-theme="dark"] .login__kpoLogo {
+  content: url("../../assets/icons/coi_common_ui_kpo_logo_group_dark.svg");
+}
+
+/* Dark mode - zwiększ rozmiar ikonek stopki względem trybu jasnego */
+[data-theme="dark"] .login__footerLogo {
+  /* nieco większe niż jasna wersja */
+  height: clamp(24px, 4vh, 30px);
+}
+
+[data-theme="dark"] .login__kpoLogo {
+  /* zwiększ KPO logo w ciemnym motywie */
+  height: clamp(20px, 3.5vh, 24px);
+  /* content już ustawiony wyżej, ale powtarzamy dla pewności */
+  content: url("../../assets/icons/coi_common_ui_kpo_logo_group_dark.svg");
+}
+
+/* Fallback dla dark mode gdy CSS nie zadziała */
+@media (prefers-color-scheme: dark) {
+  [data-theme="dark"] .login__kpoLogo {
+    content: url("../../assets/icons/coi_common_ui_kpo_logo_group_dark.svg");
+  }
+
+  /* Fallback: też większe ikonki w przypadku preferencji ciemnego motywu */
+  [data-theme="dark"] .login__footerLogo {
+    height: clamp(24px, 4vh, 30px);
+  }
+
+  [data-theme="dark"] .login__kpoLogo {
+    height: clamp(20px, 3.5vh, 24px);
+    content: url("../../assets/icons/coi_common_ui_kpo_logo_group_dark.svg");
+  }
 }
 
 @media (max-width: 600px) {
   .login {
-    padding: clamp(12px, 2.5vh, 28px) 16px clamp(10px, 2vh, 20px);
+    padding-top: clamp(12px, 2.5vh, 28px);
+    padding-bottom: clamp(10px, 2vh, 20px);
     gap: clamp(10px, 2vh, 24px);
   }
 
@@ -296,15 +351,12 @@ a {
   .login__form {
     padding: clamp(10px, 1.8vh, 16px) clamp(14px, 2.5vw, 20px);
   }
-
-  .login__submit {
-    padding: clamp(10px, 1.8vh, 16px);
-  }
 }
 
 @media (max-height: 700px) {
   .login {
-    padding: 16px 20px 12px;
+    padding-top: 16px;
+    padding-bottom: 12px;
     gap: 12px;
   }
 
@@ -325,18 +377,19 @@ a {
     padding: 12px 18px;
   }
 
-  .login__submit {
-    padding: 12px;
+  .login__footerLogo {
+    height: 20px;
   }
 
-  .login__footerLogo {
-    height: 28px;
+  .login__kpoLogo {
+    height: 16px;
   }
 }
 
 @media (max-height: 600px) {
   .login {
-    padding: 12px 20px 10px;
+    padding-top: 12px;
+    padding-bottom: 10px;
     gap: 10px;
   }
 
@@ -353,13 +406,13 @@ a {
     padding: 10px 16px;
   }
 
-  .login__submit {
-    padding: 10px;
-    font-size: 0.95rem;
+  .login__footerLogo {
+    height: 18px;
   }
 
-  .login__footerLogo {
-    height: 24px;
+  .login__kpoLogo {
+    height: 14px;
+    margin-left: 3px;
   }
 
   .login__version {
