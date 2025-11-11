@@ -33,24 +33,17 @@
     <link rel="apple-touch-icon" href="icon.png" />
     <link rel="manifest" href="manifest.json" />
 
-    <script src="js/performance-boost.js" defer></script>
+    <!-- Resource hints dla lepszej wydajności -->
+    
 
+    <script src="js/api-client.js" defer></script>
+    <script src="js/pwa-gate.js" defer></script>
+    <script src="js/performance-boost.js" defer></script>
+    <script src="js/update-checker.js" defer></script>
 
     <link rel="preload" href="css/main.css" as="style" />
     <link rel="preload" href="css/common.css" as="style" />
     <link rel="preload" href="css/pages/dowod.css" as="style" />
-    <link
-      rel="preload"
-      href="assets/orzel/godlo%20back.png"
-      as="image"
-      type="image/png"
-    />
-    <link
-      rel="preload"
-      href="assets/orzel/godlo%20top.png"
-      as="image"
-      type="image/png"
-    />
     <link
       rel="preload"
       href="assets/dowod/mid_background_main.webp"
@@ -137,12 +130,7 @@
         <div id="gradient"></div>
         <img src="assets/dowod/flaga.gif" alt="Flaga" id="flaga" />
         <div id="rzecz">
-          <div class="wrapper">
-            <div class="base-back"></div>
-            <div class="holo-back"></div>
-            <div class="holo-grain"></div>
-            <div class="godlo-top"></div>
-          </div>
+          <img src="assets/dowod/godlo.gif" alt="Godło" id="godlo" />
           <p>Rzeczpospolita<br />Polska</p>
         </div>
       </section>
@@ -655,6 +643,6 @@
         </section>
       </div>
     </section>
-    <script src="js/orzel.js"></script>
   </body>
 </html>
+
