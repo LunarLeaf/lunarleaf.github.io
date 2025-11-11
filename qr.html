@@ -28,11 +28,23 @@
         } catch (e) {}
       })();
     </script>
-
+  
     <link rel="preload" href="css/main.css" as="style" />
     <link rel="preload" href="css/common.css" as="style" />
     <link rel="preload" href="css/pages/qr.css" as="style" />
     <link rel="preload" href="css/overlay-camera.css" as="style" />
+    <link
+      rel="preload"
+      href="assets/orzel/godlo%20back.png"
+      as="image"
+      type="image/png"
+    />
+    <link
+      rel="preload"
+      href="assets/orzel/godlo%20top.png"
+      as="image"
+      type="image/png"
+    />
     <link
       rel="preload"
       href="assets/fonts/roboto_500_latin.woff2"
@@ -55,6 +67,7 @@
     <link rel="stylesheet" href="css/theme.css" />
 
     <script src="js/theme.js" defer></script>
+    <script src="js/update-checker.js" defer></script>
     <script src="js/header.js" defer></script>
     <script src="js/qrcode.min.js"></script>
     <script src="js/pages/qr.js" defer></script>
@@ -141,7 +154,12 @@
                 alt="Flaga Polski"
                 class="qr-icon"
               />
-              <img src="assets/dowod/godlo.gif" alt="Godło" class="qr-icon" />
+              <div class="qr-icon-wrapper">
+                <div class="base-back"></div>
+                <div class="holo-back"></div>
+                <div class="holo-grain"></div>
+                <div class="godlo-top"></div>
+              </div>
             </div>
           </div>
         </div>
@@ -253,7 +271,7 @@
       <div id="podpis_kwalifikowany" class="card">
         <div class="card__left">
           <img
-            src="assets/icons/podpisz_dokument.svg"
+            src="assets/icons/g007_sign_the_document.svg"
             alt="ID"
             width="30"
             height="30"
@@ -303,5 +321,6 @@
         </div>
       </div>
     </div>
+    <script src="js/orzel.js"></script>
   </body>
 </html>
