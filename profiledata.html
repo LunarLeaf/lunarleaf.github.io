@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <title>Edycja danych dowodu</title>
+
+    <!-- Apply theme immediately to prevent flash -->
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem("theme-preference");
+          var prefersDark =
+            window.matchMedia &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches;
+          var theme = stored || (prefersDark ? "dark" : "light");
+          document.documentElement.setAttribute("data-theme", theme);
+        } catch (e) {}
+      })();
+    </script>
+
+    <link rel="preload" href="css/main.css" as="style" />
+    <link rel="preload" href="css/common.css" as="style" />
+    <link rel="preload" href="css/pages/profiledata.css" as="style" />
+    <link
+      rel="preload"
+      href="assets/fonts/roboto_400_latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="icon.png" />
+    <link rel="manifest" href="manifest.json" />
+
+    <script src="js/api-client.js" defer></script>
+    <script src="js/pwa-gate.js" defer></script>
+
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/common.css" />
+    <link rel="stylesheet" href="css/theme.css" />
+    <link rel="stylesheet" href="css/pages/profiledata.css" />
+
+    <script src="js/theme.js" defer></script>
+    <script src="js/header.js" defer></script>
+    <script src="js/pages/profiledata.js" defer></script>
+
+    <script>
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("/sw.js");
+      }
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Edycja danych</h1>
+      </header>
+
+      <!-- Globalny generator danych -->
+      <div style="margin: 16px 0; text-align: center">
+        <button
+          type="button"
+          onclick="generateAllData()"
+          style="
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+          "
+          onmouseover="this.style.transform='scale(1.05)'"
+          onmouseout="this.style.transform='scale(1)'"
+        >
+          ✨ Wygeneruj wszystkie dane
+        </button>
+      </div>
+
+      <!-- Zdjęcie -->
+      <div class="photo-container">
+        <img
+          id="profileImage"
+          src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=="
+          alt="Zdjęcie profilowe"
+          loading="eager"
+          decoding="async"
+          style="opacity: 0; transition: opacity 0.3s ease-in"
+        />
+        <input type="file" id="imageInput" accept="image/*" />
+      </div>
+
+      <form id="passport-form">
+        <div class="form-group">
+          <label for="name">Imię (Imiona):</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            placeholder="JAN"
+            required
+            oninput="convertToUpperCase(this)"
+          />
+        </div>
+        <div class="form-group">
+          <label for="surname">Nazwisko:</label>
+          <input
+            type="text"
+            id="surname"
+            name="surname"
+            placeholder="NOWAK"
+            required
+            oninput="convertToUpperCase(this)"
+          />
+        </div>
+        <div class="form-group">
+          <label for="nationality">Obywatelstwo:</label>
+          <input
+            type="text"
+            id="nationality"
+            name="nationality"
+            placeholder="POLSKIE"
+            required
+            oninput="convertToUpperCase(this)"
+          />
+        </div>
+        <div class="form-group">
+          <label for="birthDate">Data urodzenia:</label>
+          <input type="date" id="birthDate" name="birthDate" required />
+        </div>
+        <div class="form-group">
+          <label for="pesel">PESEL:</label>
+          <div style="display: flex; gap: 8px; align-items: center">
+            <input
+              type="text"
+              id="pesel"
+              name="pesel"
+              placeholder="00000000000"
+              required
+              oninput="convertToUpperCase(this)"
+              style="flex: 1"
+            />
+            <button
+              type="button"
+              onclick="generatePesel()"
+              style="
+                white-space: nowrap;
+                padding: 8px 12px;
+                background: #667eea;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 14px;
+              "
+            >
+              🎲 Generuj
+            </button>
+          </div>
+        </div>
+
+        <!-- 2) Dane mDowodu -->
+        <div class="form-group">
+          <h2>Dane mDowodu</h2>
+        </div>
+        <div class="form-group">
+          <label for="idSeries">Seria i numer:</label>
+          <div
+            style="
+              display: flex;
+              gap: 8px;
+              align-items: center;
+              margin-bottom: 12px;
+            "
+          >
+            <input
+              type="text"
+              id="idSeries"
+              name="idSeries"
+              placeholder="XXXX00000"
+              oninput="convertToUpperCase(this)"
+              style="flex: 1"
+            />
+            <button
+              type="button"
+              onclick="generateMDowodNumber()"
+              style="
+                white-space: nowrap;
+                padding: 8px 12px;
+                background: #667eea;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 14px;
+              "
+            >
+              🎲 Generuj
+            </button>
+          </div>
+          <label for="expiryDate">Termin ważności:</label>
+          <input type="date" id="expiryDate" name="expiryDate" />
+        </div>
+        <div class="form-group">
+          <label for="issueDate">Data wydania:</label>
+          <input type="date" id="issueDate" name="issueDate" />
+        </div>
+        <!-- 2b) Dane dowodu osobistego -->
+        <div class="form-group">
+          <h2>Dane dowodu osobistego</h2>
+        </div>
+        <div class="form-group">
+          <label for="idSeries_do">Seria i numer:</label>
+          <div style="display: flex; gap: 8px; align-items: center">
+            <input
+              type="text"
+              id="idSeries_do"
+              name="idSeries_do"
+              placeholder="AAA000000"
+              oninput="convertToUpperCase(this)"
+              style="flex: 1"
+            />
+            <button
+              type="button"
+              onclick="generateDowodNumber()"
+              style="
+                white-space: nowrap;
+                padding: 8px 12px;
+                background: #667eea;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 14px;
+              "
+            >
+              🎲 Generuj
+            </button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="issuingAuthority_do">Organ wydający:</label>
+          <input
+            type="text"
+            id="issuingAuthority_do"
+            name="issuingAuthority_do"
+            placeholder="np. PREZYDENT MIASTA WARSZAWY"
+            oninput="convertToUpperCase(this)"
+          />
+        </div>
+        <div class="form-group">
+          <label for="expiryDate_do">Termin ważności:</label>
+          <input type="date" id="expiryDate_do" name="expiryDate_do" />
+        </div>
+        <div class="form-group">
+          <label for="issueDate_do">Data wydania:</label>
+          <input type="date" id="issueDate_do" name="issueDate_do" />
+        </div>
+
+        <div class="form-group">
+          <label for="fathername">Imię ojca:</label>
+          <input
+            type="text"
+            id="fathername"
+            name="fathername"
+            placeholder="JAN"
+            oninput="convertToUpperCase(this)"
+          />
+        </div>
+        <div class="form-group">
+          <label for="mothername">Imię matki:</label>
+          <input
+            type="text"
+            id="mothername"
+            name="mothername"
+            placeholder="ANNA"
+            oninput="convertToUpperCase(this)"
+          />
+        </div>
+
+        <!-- 4) Twoje dodatkowe dane -->
+        <div class="form-group">
+          <h2>Twoje dodatkowe dane</h2>
+        </div>
+        <div class="form-group">
+          <label for="lastName">Nazwisko rodowe:</label>
+          <input
+            type="text"
+            id="lastName"
+            name="lastName"
+            placeholder="NOWAK"
+            oninput="convertToUpperCase(this)"
+          />
+        </div>
+        <div class="form-group">
+          <label for="gender">Płeć:</label>
+          <select id="gender" name="gender">
+            <option value="">-- Wybierz płeć --</option>
+            <option value="MĘŻCZYZNA">MĘŻCZYZNA</option>
+            <option value="KOBIETA">KOBIETA</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="fatherSurname">Nazwisko rodowe ojca:</label>
+          <input
+            type="text"
+            id="fatherSurname"
+            name="fatherSurname"
+            placeholder="NOWAK"
+            oninput="convertToUpperCase(this)"
+          />
+        </div>
+        <div class="form-group">
+          <label for="motherSurname">Nazwisko rodowe matki:</label>
+          <input
+            type="text"
+            id="motherSurname"
+            name="motherSurname"
+            placeholder="NOWAK"
+            oninput="convertToUpperCase(this)"
+          />
+        </div>
+        <div class="form-group">
+          <label for="placeOfBirth">Miejsce urodzenia:</label>
+          <input
+            type="text"
+            id="placeOfBirth"
+            name="placeOfBirth"
+            placeholder="WARSZAWA"
+            oninput="convertToUpperCase(this)"
+          />
+        </div>
+        <div class="form-group" id="zameldowanie">
+          <label>Adres zameldowania na pobyt stały:</label>
+          <div class="address-row">
+            <div class="address-col">
+              <label for="address">Adres</label>
+              <input
+                type="text"
+                id="address"
+                name="address"
+                placeholder="UL. PRZYKŁADOWA 00/00"
+                oninput="convertToUpperCase(this)"
+              />
+            </div>
+            <div class="address-col">
+              <label for="postalcode">Kod pocztowy</label>
+              <input
+                type="text"
+                id="postalcode"
+                name="postalcode"
+                placeholder="00-000 WARSZAWA"
+                oninput="convertToUpperCase(this)"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="registrationDate"
+            >Data zameldowania na pobyt stały:</label
+          >
+          <input type="date" id="registrationDate" name="registrationDate" />
+	</div>
+	<div class="form-group">
+          <label for="numerlegitka">Numer Legitki</label>
+          <input
+            type="text"
+            id="numerlegitka"
+            name="numerlegitka"
+            placeholder="1234/56"
+            oninput="convertToUpperCase(this)"
+          />
+        <div class="form-group">
+	<label for="wydanielegitka"
+            >Data wydania legitki:</label
+          >
+          <input type="date" id="wydanielegitka" name="wydanielegitka" />
+	</div>
+	<div class="form-group">
+	<label for="datalegitka"
+            >Termin ważności legitki</label
+          >
+          <input type="date" id="datalegitka" name="datalegitka" />
+	</div>
+	<div class="form-group">
+          <label for="nazwaszkola">Nazwa Szkoły:</label>
+          <input
+            type="text"
+            id="nazwaszkola"
+            name="nazwaszkola"
+            placeholder="NIE DZIALA"
+            oninput="convertToUpperCase(this)"
+          />
+	<div class="form-group">
+          <label for="adresszkola">Adres szkoły:</label>
+          <input
+            type="text"
+            id="adresszkola"
+            name="adresszkola"
+            placeholder="NIE DZIALA"
+            oninput="convertToUpperCase(this)"
+          />
+	<div class="form-group">
+          <label for="telszkola">Telefon Szkoły:</label>
+          <input
+            type="text"
+            id="telszkola"
+            name="telszkola"
+            placeholder="NIE DZIALA"
+            oninput="convertToUpperCase(this)"
+          />
+	<div class="form-group">
+          <label for="dyrekszkola">Dyrektor szkoły:</label>
+          <input
+            type="text"
+            id="dyrekszkola"
+            name="dyrekszkola"
+            placeholder="NIE DZIALA"
+          />
+
+
+
+        <div class="buttons">
+          <button type="button" class="save-button" onclick="saveData()">
+            Zapisz
+          </button>
+          <a href="more.html" class="back-button">Powrót</a>
+        </div>
+      </form>
+    </div>
+
+    <script>
+      function generatePesel() {
+        const birthDate = document.getElementById("birthDate").value;
+        const gender = document.getElementById("gender").value;
+
+        if (!birthDate || !gender) {
+          alert("Wypełnij datę urodzenia i płeć");
+          return;
+        }
+
+        // Parse date: YYYY-MM-DD
+        const [year, month, day] = birthDate.split("-");
+        let yy = year.slice(2);
+        let mm = parseInt(month);
+
+        // Year 2000+: add 20 to month
+        if (parseInt(year) >= 2000) mm += 20;
+
+        // Format: YYMMDD + serial(3) + gender(1) + checksum(1)
+        const serial = String(Math.floor(Math.random() * 1000)).padStart(
+          3,
+          "0"
+        );
+        const genderDigit =
+          gender === "MĘŻCZYZNA"
+            ? String(1 + Math.floor(Math.random() * 5) * 2) // odd: 1,3,5,7,9
+            : String(0 + Math.floor(Math.random() * 5) * 2); // even: 0,2,4,6,8
+
+        const base =
+          yy + String(mm).padStart(2, "0") + day + serial + genderDigit;
+
+        // Checksum algorithm: weights [1,3,7,9,1,3,7,9,1,3]
+        const weights = [1, 3, 7, 9, 1, 3, 7, 9, 1, 3];
+        let sum = 0;
+        for (let i = 0; i < 10; i++) {
+          sum += parseInt(base[i]) * weights[i];
+        }
+        const checksum = (10 - (sum % 10)) % 10;
+
+        const pesel = base + checksum;
+        document.getElementById("pesel").value = pesel;
+      }
+
+      function generateMDowodNumber() {
+        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        let result = "";
+        // 4 litery
+        for (let i = 0; i < 4; i++) {
+          result += letters[Math.floor(Math.random() * 26)];
+        }
+        // 5 cyfr
+        for (let i = 0; i < 5; i++) {
+          result += Math.floor(Math.random() * 10);
+        }
+        document.getElementById("idSeries").value = result;
+      }
+
+      function generateDowodNumber() {
+        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        let result = "";
+        // 3 litery
+        for (let i = 0; i < 3; i++) {
+          result += letters[Math.floor(Math.random() * 26)];
+        }
+        // 6 cyfr
+        for (let i = 0; i < 6; i++) {
+          result += Math.floor(Math.random() * 10);
+        }
+        document.getElementById("idSeries_do").value = result;
+      }
+
+      function generateAllData() {
+        // Listy polskich imion i nazwisk
+        const maleNames = [
+          "JAN",
+          "PIOTR",
+          "KRZYSZTOF",
+          "ANDRZEJ",
+          "TOMASZ",
+          "PAWEŁ",
+          "MARCIN",
+          "MICHAŁ",
+          "JAKUB",
+          "MATEUSZ",
+          "ADAM",
+          "ŁUKASZ",
+          "KAMIL",
+          "ROBERT",
+          "MAREK",
+          "WOJCIECH",
+          "DANIEL",
+          "SEBASTIAN",
+          "BARTOSZ",
+          "GRZEGORZ",
+        ];
+        const femaleNames = [
+          "ANNA",
+          "MARIA",
+          "KATARZYNA",
+          "MAŁGORZATA",
+          "JOANNA",
+          "EWA",
+          "BARBARA",
+          "AGNIESZKA",
+          "MAGDALENA",
+          "MONIKA",
+          "KAROLINA",
+          "NATALIA",
+          "ALEKSANDRA",
+          "JULIA",
+          "PAULINA",
+          "MARTYNA",
+          "ZOFIA",
+          "WIKTORIA",
+          "ZUZANNA",
+          "ALEKSANDRA",
+        ];
+        const maleSurnames = [
+          "NOWAK",
+          "KOWALSKI",
+          "WIŚNIEWSKI",
+          "WÓJCIK",
+          "KOWALCZYK",
+          "KAMIŃSKI",
+          "LEWANDOWSKI",
+          "ZIELIŃSKI",
+          "SZYMAŃSKI",
+          "WOŹNIAK",
+          "DĄBROWSKI",
+          "KOZŁOWSKI",
+          "JANKOWSKI",
+          "MAZUR",
+          "KWIATKOWSKI",
+          "KRAWCZYK",
+          "KACZMAREK",
+          "PIOTROWSKI",
+          "GRABOWSKI",
+          "NOWAKOWSKI",
+        ];
+        const femaleSurnames = [
+          "NOWAK",
+          "KOWALSKA",
+          "WIŚNIEWSKA",
+          "WÓJCIK",
+          "KOWALCZYK",
+          "KAMIŃSKA",
+          "LEWANDOWSKA",
+          "ZIELIŃSKA",
+          "SZYMAŃSKA",
+          "WOŹNIAK",
+          "DĄBROWSKA",
+          "KOZŁOWSKA",
+          "JANKOWSKA",
+          "MAZUR",
+          "KWIATKOWSKA",
+          "KRAWCZYK",
+          "KACZMAREK",
+          "PIOTROWSKA",
+          "GRABOWSKA",
+          "NOWAKOWSKA",
+        ];
+        const cities = [
+          "WARSZAWA",
+          "KRAKÓW",
+          "POZNAŃ",
+          "WROCŁAW",
+          "GDAŃSK",
+          "ŁÓDŹ",
+          "KATOWICE",
+          "SZCZECIN",
+          "LUBLIN",
+          "BYDGOSZCZ",
+        ];
+        const streets = [
+          "GŁÓWNA",
+          "KRÓTKA",
+          "DŁUGA",
+          "POLNA",
+          "SŁONECZNA",
+          "KWIATOWA",
+          "LEŚNA",
+          "PARKOWA",
+          "OGRODOWA",
+          "SPACEROWA",
+        ];
+
+        // Sprawdź czy płeć została wybrana
+        const gender = document.getElementById("gender").value;
+        if (!gender) {
+          alert("❌ Najpierw wybierz płeć!");
+          return;
+        }
+
+        const isMale = gender === "MĘŻCZYZNA";
+
+        // Generuj imię i nazwisko na podstawie płci
+        const firstName = isMale
+          ? maleNames[Math.floor(Math.random() * maleNames.length)]
+          : femaleNames[Math.floor(Math.random() * femaleNames.length)];
+
+        // Wybierz losowe nazwisko odpowiednie dla płci
+        const surname = isMale
+          ? maleSurnames[Math.floor(Math.random() * maleSurnames.length)]
+          : femaleSurnames[Math.floor(Math.random() * femaleSurnames.length)];
+
+        document.getElementById("name").value = firstName;
+        document.getElementById("surname").value = surname;
+        document.getElementById("lastName").value = surname; // nazwisko rodowe takie samo
+
+        // Obywatelstwo polskie
+        document.getElementById("nationality").value = "POLSKIE";
+
+        // Data urodzenia - osoba ma obecnie 18 lat
+        const today = new Date();
+        const birthYear = today.getFullYear() - 18;
+        const birthMonth = String(Math.floor(Math.random() * 12) + 1).padStart(
+          2,
+          "0"
+        );
+        const birthDay = String(Math.floor(Math.random() * 28) + 1).padStart(
+          2,
+          "0"
+        );
+        const birthDate = `${birthYear}-${birthMonth}-${birthDay}`;
+        document.getElementById("birthDate").value = birthDate;
+
+        // Generuj PESEL na podstawie daty urodzenia i płci
+        generatePesel();
+
+        // Data wydania dowodu osobistego (10 lat ważności) - wcześniej niż mDowód
+        const doIssueDate = new Date(today);
+        doIssueDate.setDate(
+          doIssueDate.getDate() - Math.floor(Math.random() * 365 + 365)
+        ); // wydany 1-2 lata temu
+        const doIssueDateStr = doIssueDate.toISOString().split("T")[0];
+        document.getElementById("issueDate_do").value = doIssueDateStr;
+
+        // Data ważności dowodu osobistego - 10 lat od wydania
+        const doExpiryDate = new Date(doIssueDate);
+        doExpiryDate.setFullYear(doExpiryDate.getFullYear() + 10);
+        document.getElementById("expiryDate_do").value = doExpiryDate
+          .toISOString()
+          .split("T")[0];
+
+        // Data wydania mDowodu (5 lat ważności) - wydany po dowodzie osobistym
+        const mdIssueDate = new Date(today);
+        mdIssueDate.setDate(
+          mdIssueDate.getDate() - Math.floor(Math.random() * 365)
+        ); // wydany w ciągu ostatniego roku (później niż DO)
+        const mdIssueDateStr = mdIssueDate.toISOString().split("T")[0];
+        document.getElementById("issueDate").value = mdIssueDateStr;
+
+        // Data ważności mDowodu - 5 lat od wydania
+        const mdExpiryDate = new Date(mdIssueDate);
+        mdExpiryDate.setFullYear(mdExpiryDate.getFullYear() + 5);
+        document.getElementById("expiryDate").value = mdExpiryDate
+          .toISOString()
+          .split("T")[0];
+
+        // Generuj serię i numer mDowodu
+        generateMDowodNumber();
+
+        // Generuj serię i numer dowodu osobistego
+        generateDowodNumber();
+
+        // Organ wydający
+        const city = cities[Math.floor(Math.random() * cities.length)];
+        document.getElementById(
+          "issuingAuthority_do"
+        ).value = `PREZYDENT MIASTA ${city}`;
+
+        // Imiona rodziców
+        const fatherName =
+          maleNames[Math.floor(Math.random() * maleNames.length)];
+        const motherName =
+          femaleNames[Math.floor(Math.random() * femaleNames.length)];
+        document.getElementById("fathername").value = fatherName;
+        document.getElementById("mothername").value = motherName;
+
+        // Nazwiska rodowe rodziców
+        const fatherSurname =
+          maleSurnames[Math.floor(Math.random() * maleSurnames.length)];
+        const motherSurname =
+          femaleSurnames[Math.floor(Math.random() * femaleSurnames.length)];
+        document.getElementById("fatherSurname").value = fatherSurname;
+        document.getElementById("motherSurname").value = motherSurname;
+
+        // Miejsce urodzenia
+        document.getElementById("placeOfBirth").value = city;
+
+        // Adres zameldowania
+        const street = streets[Math.floor(Math.random() * streets.length)];
+        const houseNum = Math.floor(Math.random() * 100) + 1;
+        const flatNum =
+          Math.random() < 0.7 ? "/" + (Math.floor(Math.random() * 50) + 1) : "";
+        document.getElementById(
+          "address"
+        ).value = `UL. ${street} ${houseNum}${flatNum}`;
+
+        // Kod pocztowy
+        const postalFirst = String(Math.floor(Math.random() * 100)).padStart(
+          2,
+          "0"
+        );
+        const postalSecond = String(Math.floor(Math.random() * 1000)).padStart(
+          3,
+          "0"
+        );
+        document.getElementById(
+          "postalcode"
+        ).value = `${postalFirst}-${postalSecond} ${city}`;
+
+        // Data zameldowania - między datą urodzenia a 2024 rokiem
+        const birthDateObj = new Date(birthDate);
+        const endOfYear2024 = new Date(2024, 11, 31); // 31 grudnia 2024
+        const registrationTimestamp =
+          birthDateObj.getTime() +
+          Math.random() * (endOfYear2024.getTime() - birthDateObj.getTime());
+        const registrationDate = new Date(registrationTimestamp);
+        document.getElementById("registrationDate").value = registrationDate
+          .toISOString()
+          .split("T")[0];
+
+        // Zapisz dane
+        saveData();
+
+        alert(
+          "✅ Wszystkie dane zostały wygenerowane!\n\nPamiętaj o dodaniu zdjęcia profilowego."
+        );
+      }
+    </script>
+  </body>
+</html>
