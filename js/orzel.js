@@ -1,81 +1,97 @@
-// Inicjalizacja hologramu
+<script>
 (function () {
-  console.log("orzel.js loaded");
+  console.log("Hologram script loaded");
 
+  // --- Setup ---
   function initHologram() {
     const holos = document.querySelectorAll(".holo-back");
     const bases = document.querySelectorAll(".base-back");
     const tops = document.querySelectorAll(".godlo-top");
 
-    console.log(
-      "initHologram: found",
-      holos.length,
-      "holo-back,",
-      bases.length,
-      "base-back,",
-      tops.length,
-      "godlo-top"
-    );
+    if (!holos.length) return console.warn("No .holo-back found!");
 
-    if (holos.length === 0) {
-      console.warn("No .holo-back elements found!");
-      return;
-    }
+    bases.forEach(b => { b.style.display = "block"; b.style.opacity = "1"; });
+    tops.forEach(t => { t.style.display = "block"; t.style.opacity = "1"; });
 
-    // Wymuszenie załadowania obrazów tła
-    bases.forEach((base) => {
-      base.style.display = "block";
-      base.style.opacity = "1";
+    holos.forEach(h => {
+      h.style.opacity = "0.7";
+      h.style.backgroundPosition = "center 50%";
     });
-
-    tops.forEach((top) => {
-      top.style.display = "block";
-      top.style.opacity = "1";
-    });
-
-    // Inicjalna widoczność hologramu w pozycji pionowej
-    holos.forEach((holo) => {
-      holo.style.opacity = "0.7";
-      holo.style.backgroundPosition = "center 50%";
-    });
-
-    console.log("Hologram initialized successfully");
   }
 
-  // Uruchom natychmiast - skrypt jest na końcu body
-  initHologram();
-
-  // KLUCZOWE: Uruchom też przy każdym pokazaniu strony (nawigacja z cache)
-  window.addEventListener("pageshow", function (event) {
-    console.log("pageshow event fired, persisted:", event.persisted);
-    initHologram();
-  });
-
-  // Obsługa deviceorientation
-  window.addEventListener("deviceorientation", function (e) {
+  function handleOrientation(e) {
     if (e.beta === null) return;
-
-    const beta = e.beta;
     const holos = document.querySelectorAll(".holo-back");
-
-    // Zawsze pokazuj gradient - zmienia się intensywność i pozycja
-    let t = Math.sin(((beta - 90) * Math.PI) / 180);
+    let t = Math.sin(((e.beta - 90) * Math.PI) / 180);
     t = Math.abs(t);
-    t = Math.pow(t, 0.8); // bardziej wrażliwe na zmiany kąta
-
-    // Zwiększone minimum opacity dla zakresu 60-140
-    let minOpacity = 0.3;
-    if (beta >= 60 && beta <= 140) {
-      minOpacity = 0.7; // mocniejsze kolory w pozycji pionowej
-    }
+    t = Math.pow(t, 0.8);
+    let minOpacity = (e.beta >= 60 && e.beta <= 140) ? 0.7 : 0.3;
     const opacity = Math.max(minOpacity, t);
-
     const pos = 100 * t;
-
-    // Zastosuj do wszystkich hologramów na stronie
-    holos.forEach((holo) => {
-      holo.style.backgroundPosition = `center ${pos}%`;
-      holo.style.opacity = opacity;
+    holos.forEach(h => {
+      h.style.backgroundPosition = `center ${pos}%`;
+      h.style.opacity = opacity;
     });
+  }
+
+  // --- Popup logic ---
+  const popup = document.getElementById("motion-popup");
+  const button = document.getElementById("enableMotionBtn");
+
+  function showPopup() {
+    popup.style.visibility = "visible";
+    popup.style.opacity = "1";
+  }
+  function hidePopup() {
+    popup.style.opacity = "0";
+    setTimeout(() => popup.style.visibility = "hidden", 300);
+  }
+
+  function enableMotion() {
+    console.log("Trying to enable motion...");
+    if (
+      typeof DeviceOrientationEvent !== "undefined" &&
+      typeof DeviceOrientationEvent.requestPermission === "function"
+    ) {
+      // iOS 13+
+      DeviceOrientationEvent.requestPermission()
+        .then(response => {
+          console.log("Motion permission:", response);
+          if (response === "granted") {
+            window.addEventListener("deviceorientation", handleOrientation);
+            hidePopup();
+          } else {
+            alert("Brak zgody – efekt hologramu nie będzie działał.");
+          }
+        })
+        .catch(err => console.error("Permission error:", err));
+    } else {
+      console.log("Standard motion access (non-iOS)");
+      window.addEventListener("deviceorientation", handleOrientation);
+      hidePopup();
+    }
+  }
+
+  // --- Run setup ---
+  document.addEventListener("DOMContentLoaded", () => {
+    initHologram();
+    window.addEventListener("pageshow", initHologram);
+
+    if (button) button.addEventListener("click", enableMotion);
+
+    const iOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+    console.log("iOS detected:", iOS);
+
+    // iOS Safari often delays showing the popup until touchstart
+    if (iOS) {
+      window.addEventListener("touchstart", function once() {
+        showPopup();
+        window.removeEventListener("touchstart", once);
+      });
+    } else {
+      // Non-iOS: enable motion automatically
+      window.addEventListener("deviceorientation", handleOrientation);
+    }
   });
 })();
+</script>
