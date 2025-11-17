@@ -77,30 +77,18 @@ main {
   contain: layout style paint;
   content-visibility: auto;
 
-  /* ✅ Height behavior */
-  height: 45vh;   /* fallback for old browsers */
-  height: 45dvh;  /* dynamic viewport height — modern fix */
-  min-height: 280px; /* ensures decent height on iPhone SE */
-  max-height: 480px; /* prevents it from getting too tall on big phones */
+  /* ✅ Prevent resizing on smaller phones */
+  height: 380px;
+  min-height: 380px;
+  max-height: 380px;
+
+  -webkit-text-size-adjust: 100%;
 
   /* Optional: safe area padding for notches/home bar */
   padding-top: env(safe-area-inset-top);
   padding-bottom: env(safe-area-inset-bottom);
 }
 
-/* 📱 Small phones (like iPhone SE, height ≤ 700px) */
-@media (max-height: 700px) {
-  main {
-    height: 55dvh;
-  }
-}
-
-/* 🖥️ Very tall screens (like iPhone Pro Max) */
-@media (min-height: 850px) {
-  main {
-    height: 40dvh;
-  }
-}
 
 
 #lew {

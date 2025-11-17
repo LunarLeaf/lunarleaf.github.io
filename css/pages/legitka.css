@@ -77,16 +77,17 @@ main {
   contain: layout style paint;
   content-visibility: auto;
 
-  /* ✅ Height behavior */  /* dynamic viewport height — modern fix */
-  min-height: 385px; /* ensures decent height on iPhone SE */
-  max-height: 385px; /* prevents it from getting too tall on big phones */
+  /* ✅ Prevent resizing on smaller phones */
+  height: 400px;
+  min-height: 400px;
+  max-height: 400px;
+
+  -webkit-text-size-adjust: 100%;
 
   /* Optional: safe area padding for notches/home bar */
   padding-top: env(safe-area-inset-top);
   padding-bottom: env(safe-area-inset-bottom);
 }
-
-/* 📱 Small phones (like iPhone SE, height ≤ 700px) */
 
 
 #lew {
