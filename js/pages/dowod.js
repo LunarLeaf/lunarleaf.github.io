@@ -355,8 +355,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
   try {
     var helpOverlay = document.getElementById("help-overlay");
+    console.log("[Dowod] Help overlay element:", helpOverlay);
     var openHelp = function () {
-      if (helpOverlay) helpOverlay.style.display = "block";
+      console.log("[Dowod] openHelp called");
+      if (helpOverlay) {
+        helpOverlay.style.display = "block";
+        console.log("[Dowod] Help overlay displayed");
+      } else {
+        console.error("[Dowod] Help overlay element not found!");
+      }
       try {
         document.body.classList.add("camera-open");
       } catch (_) {}
@@ -365,6 +372,7 @@ document.addEventListener("DOMContentLoaded", function () {
       } catch (_) {}
     };
     var closeHelp = function () {
+      console.log("[Dowod] closeHelp called");
       if (helpOverlay) helpOverlay.style.display = "none";
       try {
         document.body.classList.remove("camera-open");
@@ -378,15 +386,20 @@ document.addEventListener("DOMContentLoaded", function () {
       window.closeHelpOverlay = closeHelp;
     } catch (_) {}
     var headerHelpIcon = document.querySelector("header.app-header .help-icon");
+    console.log("[Dowod] Help icon element:", headerHelpIcon);
     if (headerHelpIcon) {
       headerHelpIcon.style.cursor = "pointer";
       headerHelpIcon.addEventListener("click", function (ev) {
+        console.log("[Dowod] Help icon clicked");
         try {
           ev.preventDefault();
           ev.stopPropagation();
         } catch (_) {}
         openHelp();
       });
+      console.log("[Dowod] Help icon click listener attached");
+    } else {
+      console.warn("[Dowod] Help icon not found in DOM");
     }
   } catch (_) {}
 

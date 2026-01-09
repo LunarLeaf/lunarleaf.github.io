@@ -59,37 +59,21 @@ p.czas {
 
 main {
   position: relative;
-
-  /* Gradient and background */
+  /* Gradient placeholder podczas ładowania */
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   background-image: url(../../assets/dowod/mid_background_main.webp);
+  margin: 16px 20px 0px 20px;
+  height: 48vh;
+  display: flex;
+  border-radius: 12px 12px 0px 0px;
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
-
-  /* Layout and shape */
-  margin: 16px 20px 0 20px;
-  border-radius: 12px 12px 0 0;
-  display: flex;
-
-  /* Smooth rendering optimizations */
+  /* Optymalizacje renderowania */
   will-change: background-image;
   contain: layout style paint;
   content-visibility: auto;
-
-  /* ✅ Prevent resizing on smaller phones */
-  height: 380px;
-  min-height: 380px;
-  max-height: 380px;
-
-  -webkit-text-size-adjust: 100%;
-
-  /* Optional: safe area padding for notches/home bar */
-  padding-top: env(safe-area-inset-top);
-  padding-bottom: env(safe-area-inset-bottom);
 }
-
-
 
 #lew {
   position: relative;
@@ -1173,6 +1157,122 @@ footer {
   border-radius: 9999px;
   letter-spacing: 0.2px;
   border: none;
-
 }
 
+/* ===== INTERAKTYWNE GODŁO Z HOLOGRAMEM ===== */
+
+.wrapper {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
+
+/* Szare godło pod spodem */
+.base-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: url("../../assets/orzel/godlo%20back.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  filter: grayscale(100%) brightness(0.75);
+  opacity: 1;
+}
+
+/* Hologram kolorowy */
+.holo-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(ellipse at 15% 10%,
+      rgba(150, 100, 255, 0.8) 0%,
+      transparent 40%),
+    radial-gradient(ellipse at 85% 15%,
+      rgba(70, 150, 255, 0.7) 0%,
+      transparent 45%),
+    radial-gradient(ellipse at 25% 35%,
+      rgba(50, 200, 240, 0.8) 0%,
+      transparent 40%),
+    radial-gradient(ellipse at 75% 45%,
+      rgba(80, 220, 160, 0.7) 0%,
+      transparent 42%),
+    radial-gradient(ellipse at 10% 55%,
+      rgba(180, 230, 80, 0.8) 0%,
+      transparent 38%),
+    radial-gradient(ellipse at 90% 65%,
+      rgba(255, 190, 80, 0.7) 0%,
+      transparent 43%),
+    radial-gradient(ellipse at 40% 75%,
+      rgba(255, 120, 120, 0.8) 0%,
+      transparent 40%),
+    radial-gradient(ellipse at 60% 85%,
+      rgba(255, 170, 100, 0.7) 0%,
+      transparent 45%),
+    radial-gradient(ellipse at 30% 90%,
+      rgba(190, 230, 120, 0.6) 0%,
+      transparent 40%),
+    linear-gradient(135deg,
+      #9664ff,
+      #4696ff,
+      #32c8f0,
+      #50dca0,
+      #b4e650,
+      #ffbe50,
+      #ff7878,
+      #ffaa64,
+      #b4e650,
+      #50dca0,
+      #32c8f0,
+      #4696ff,
+      #9664ff);
+  background-size: 100% 300%;
+  opacity: 0;
+  background-position: center 50%;
+  transition: opacity 0.15s ease, background-position 0.2s ease;
+  -webkit-mask-image: url("../../assets/orzel/godlo%20back.png");
+  mask-image: url("../../assets/orzel/godlo%20back.png");
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+}
+
+/* Folia UV (mikro ziarno) */
+.holo-grain {
+  pointer-events: none;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  mix-blend-mode: overlay;
+  opacity: 0.22;
+  /* Użyj prostego wzoru SVG zamiast PNG w base64 aby uniknąć błędów CORS */
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50"><filter id="n"><feTurbulence baseFrequency="0.9" numOctaves="3"/></filter><rect width="50" height="50" filter="url(%23n)" opacity="0.3"/></svg>');
+  background-size: 180px 180px;
+  animation: grainMove 6s linear infinite;
+}
+
+@keyframes grainMove {
+  0% {
+    background-position: 0 0;
+  }
+
+  100% {
+    background-position: 120px 180px;
+  }
+}
+
+/* Godło TOP */
+.godlo-top {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: url("../../assets/orzel/godlo%20top.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  pointer-events: none;
+}

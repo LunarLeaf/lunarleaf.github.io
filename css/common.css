@@ -57,63 +57,6 @@ body {
   --space-6: 24px;
 }
 
-@font-face {
-  font-family: "Roboto light";
-  src: url("../assets/fonts/roboto_light.ttf") format("truetype");
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Roboto regular";
-  src: url("../assets/fonts/roboto_regular.ttf") format("truetype");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Roboto medium";
-  src: url("../assets/fonts/roboto_medium.ttf") format("truetype");
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Roboto medium italic";
-  src: url("../assets/fonts/roboto_medium_italic.ttf") format("truetype");
-  font-weight: 500;
-  font-style: italic;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Roboto bold";
-  src: url("../assets/fonts/roboto_bold.ttf") format("truetype");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Roboto black";
-  src: url("../assets/fonts/roboto_black.ttf") format("truetype");
-  font-weight: 900;
-  font-style: normal;
-  font-display: swap;
-}
-
-/* Optional numeric-only face */
-@font-face {
-  font-family: "Roboto Numbers";
-  src: url("../assets/fonts/roboto_medium_numbers.ttf") format("truetype");
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
 /* Roboto WOFF2 subsets (latin-ext + latin) with local() fallback for iOS/Safari */
 /* Weight 300 */
 @font-face {
@@ -413,6 +356,34 @@ header.app-header {
   transform: translateZ(0);
   -webkit-transform: translateZ(0);
   contain: layout paint;
+  box-shadow: none !important;
+  border-bottom: none !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  header.app-header {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+  }
+}
+
+/* Globalny selektor dla .app-header (inline styles w HTML) */
+.app-header {
+  box-shadow: none !important;
+  border: none !important;
+  border-bottom: none !important;
+}
+
+html[data-theme="light"] .app-header,
+html:not([data-theme]) .app-header {
+  box-shadow: none !important;
+  border: none !important;
+  border-bottom: none !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  .app-header {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+  }
 }
 
 .header-left {
