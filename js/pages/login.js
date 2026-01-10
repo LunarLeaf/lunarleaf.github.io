@@ -1,8 +1,6 @@
 (function () {
   // Gyroscope permission handling
-  let gyroRequested = false;
   let gyroPopup = null;
-  let gyroEnabled = false;
 
   function createGyroPopup() {
     if (gyroPopup) return;
@@ -27,7 +25,7 @@
               Pomiń na razie
             </button>
           </div>
-          <p class="gyro-popup__note"><small>Możesz zmienić tę opcję później w ustawieniach.</small></p>
+          <p class="gyro-popup__note"><small>Ta prośba pojawi się przy każdym logowaniu.</small></p>
         </div>
       </div>
     `;
@@ -169,8 +167,7 @@
   }
 
   function showGyroPopup() {
-    if (gyroRequested) return;
-    
+    // ALWAYS show the popup, don't check localStorage or previous choices
     createGyroPopup();
     gyroPopup.style.display = 'block';
     
@@ -181,11 +178,9 @@
     
     document.getElementById('skipGyroBtn').addEventListener('click', function() {
       hideGyroPopup();
-      gyroRequested = true;
-      localStorage.setItem('gyroSkipped', 'true');
+      // Don't save to localStorage, we'll ask again next time
+      proceedWithLogin();
     });
-    
-    gyroRequested = true;
   }
 
   function hideGyroPopup() {
@@ -205,74 +200,113 @@
           console.log('[Gyroscope] Permission state:', permissionState);
           
           if (permissionState === 'granted') {
-            gyroEnabled = true;
-            localStorage.setItem('gyroEnabled', 'true');
-            alert('Gyroscope został włączony!');
+            // Don't save to localStorage, we'll ask again next time
+            alert('Gyroscope został włączony dla tej sesji!');
           } else {
-            localStorage.setItem('gyroEnabled', 'false');
+            // Don't save to localStorage
             alert('Gyroscope nie został włączony. Możesz to zmienić w ustawieniach Safari.');
           }
           
           hideGyroPopup();
-          gyroRequested = true;
+          proceedWithLogin();
         })
         .catch(err => {
           console.error('[Gyroscope] Permission error:', err);
-          localStorage.setItem('gyroEnabled', 'false');
           hideGyroPopup();
-          gyroRequested = true;
+          proceedWithLogin();
         });
         
     } else {
-      // For non-iOS devices, just enable gyro
+      // For non-iOS devices
       console.log('[Gyroscope] Non-iOS device, gyro available');
-      gyroEnabled = true;
-      localStorage.setItem('gyroEnabled', 'true');
+      // Don't save to localStorage
+      alert('Gyroscope został włączony dla tej sesji!');
       hideGyroPopup();
-      gyroRequested = true;
-      alert('Gyroscope został włączony!');
+      proceedWithLogin();
     }
   }
 
-  function checkAndShowGyroPopup() {
-    // Don't show if already requested or skipped
-    if (gyroRequested) return;
-    
-    const skipped = localStorage.getItem('gyroSkipped');
-    const enabled = localStorage.getItem('gyroEnabled');
-    
-    // Only show popup if user hasn't made a decision yet
-    if (!skipped && enabled !== 'true') {
-      // Wait a bit for page to load
-      setTimeout(() => {
-        showGyroPopup();
-      }, 1000);
-    } else if (enabled === 'true') {
-      gyroEnabled = true;
-    }
+  function proceedWithLogin() {
+    // This function is called after gyro popup is handled
+    // Now we can actually process the login
+    processLoginAfterGyro();
   }
 
-  // Initialize gyro on page load
-  document.addEventListener('DOMContentLoaded', function() {
-    // Check if we should show the gyro popup
-    checkAndShowGyroPopup();
+  function processLoginAfterGyro() {
+    // Get password input value
+    const input = document.getElementById("passwordInput");
+    const pwd = input && input.value ? String(input.value) : "";
     
-    // Also attach motion permission request to form submission
-    const form = document.getElementById('loginForm');
-    if (form) {
-      form.addEventListener('submit', function(e) {
-        // Check if we need to request gyro after login
-        const gyroEnabled = localStorage.getItem('gyroEnabled');
-        const gyroSkipped = localStorage.getItem('gyroSkipped');
-        
-        if (!gyroEnabled && !gyroSkipped) {
-          e.preventDefault();
-          showGyroPopup();
-          return false;
+    if (!pwd) {
+      showPwdError("Wpisz hasło.");
+      return;
+    }
+
+    // Validate password and proceed with login
+    var stored = null;
+    try {
+      stored = localStorage.getItem("userPasswordHash");
+    } catch (_) {
+      stored = null;
+    }
+    
+    sha256Hex(pwd)
+      .then(function (h) {
+        console.log("[Login] Password validated");
+        if (!stored) {
+          // First login - set password
+          try {
+            localStorage.setItem("userPasswordHash", h);
+          } catch (_) {}
+          try {
+            sessionStorage.setItem("userUnlocked", "1");
+          } catch (_) {}
+          showPwdError("");
+          console.log("[Login] First time login successful");
+          redirectToDashboard();
+          return;
         }
+        if (stored && stored === h) {
+          // Correct password
+          try {
+            sessionStorage.setItem("userUnlocked", "1");
+          } catch (_) {}
+          showPwdError("");
+          console.log("[Login] Login successful");
+          redirectToDashboard();
+          return;
+        }
+        // Incorrect password
+        showPwdError("Wpisz poprawne hasło.");
+      })
+      .catch(function (err) {
+        console.error("[Login] Password hash error:", err);
+        showPwdError("Błąd");
       });
+  }
+
+  // Modified handleLoginSubmit to ALWAYS show gyro popup
+  function handleLoginSubmit(e) {
+    console.log("[Login] handleLoginSubmit called");
+    try {
+      if (e && typeof e.preventDefault === "function") e.preventDefault();
+      
+      const input = document.getElementById("passwordInput");
+      const pwd = input && input.value ? String(input.value) : "";
+      
+      if (!pwd) {
+        showPwdError("Wpisz hasło.");
+        return;
+      }
+      
+      // ALWAYS show gyro popup on login
+      showGyroPopup();
+      return false;
+    } catch (err) {
+      console.error("[Login] Error:", err);
+      showPwdError("Błąd");
     }
-  });
+  }
 
   // Stabilizacja viewportu w PWA/Safari
   function updateVh() {
@@ -398,72 +432,6 @@
       }
     } catch (_) {
       if (msg) alert(msg);
-    }
-  }
-
-  function handleLoginSubmit(e) {
-    console.log("[Login] handleLoginSubmit called");
-    try {
-      if (e && typeof e.preventDefault === "function") e.preventDefault();
-      var input = document.getElementById("passwordInput");
-      var pwd = input && input.value ? String(input.value) : "";
-      if (!pwd) {
-        showPwdError("Wpisz hasło.");
-        return;
-      }
-      
-      // Check gyroscope status before proceeding
-      const gyroEnabled = localStorage.getItem('gyroEnabled');
-      const gyroSkipped = localStorage.getItem('gyroSkipped');
-      
-      if (!gyroEnabled && !gyroSkipped) {
-        showGyroPopup();
-        return false;
-      }
-
-      // Walidacja hasła
-      var stored = null;
-      try {
-        stored = localStorage.getItem("userPasswordHash");
-      } catch (_) {
-        stored = null;
-      }
-      sha256Hex(pwd)
-        .then(function (h) {
-          console.log("[Login] Password validated");
-          if (!stored) {
-            // Pierwsze logowanie - ustaw hasło
-            try {
-              localStorage.setItem("userPasswordHash", h);
-            } catch (_) {}
-            try {
-              sessionStorage.setItem("userUnlocked", "1");
-            } catch (_) {}
-            showPwdError("");
-            console.log("[Login] First time login successful");
-            redirectToDashboard();
-            return;
-          }
-          if (stored && stored === h) {
-            // Hasło poprawne
-            try {
-              sessionStorage.setItem("userUnlocked", "1");
-            } catch (_) {}
-            showPwdError("");
-            console.log("[Login] Login successful");
-            redirectToDashboard();
-            return;
-          }
-          // Hasło niepoprawne
-          showPwdError("Wpisz poprawne hasło.");
-        })
-        .catch(function (err) {
-          console.error("[Login] Password hash error:", err);
-          showPwdError("Błąd");
-        });
-    } catch (err) {
-      console.error("[Login] Error:", err);
-      showPwdError("Błąd");
     }
   }
 
